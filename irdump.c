@@ -113,3 +113,34 @@ static void print_regs(char *name, Vector *v) {
     fprintf(stderr, "r%d", regno(r));
   }
 }
+
+static void print_bb(BB *bb) {
+  if (bb->param)
+    fprintf(stderr, ".L%d(r%d)", bb->label, regno(bb->param));
+  else
+    fprintf(stderr, ".L%d", bb->label);
+
+  print_rel("pred", bb->pred);
+  print_rel("succ", bb->succ);
+  print_regs("defs", bb->def_regs);
+  print_regs("in", bb->in_regs);
+  print_regs("out", bb->out_regs);
+  fprintf(stderr, "\n");
+}
+
+void dump_ir(Vector *irv) {
+  for (int i = 0; i < irv->len; i++) {
+    Function *fn = irv->data[i];
+    fprintf(stderr, "%s:\n", fn->name);
+
+    for (int i = 0; i < fn->bbs->len; i++) {
+      BB *bb = fn->bbs->data[i];
+      print_bb(bb);
+
+      for (int i = 0; i < bb->ir->len; i++) {
+        IR *ir = bb->ir->data[i];
+        fprintf(stderr, "\t%s\n", tostr(ir));
+      }
+    }
+  }
+}

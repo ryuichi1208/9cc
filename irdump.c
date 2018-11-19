@@ -89,3 +89,27 @@ static char *tostr(IR *ir) {
     assert(0 && "unknown op");
   }
 }
+
+static void print_rel(char *name, Vector *v) {
+  if (v->len == 0)
+    return;
+  fprintf(stderr, " %s=", name);
+  for (int i = 0; i < v->len; i++) {
+    BB *bb = v->data[i];
+    if (i > 0)
+      fprintf(stderr, ",");
+    fprintf(stderr, ".L%d", bb->label);
+  }
+}
+
+static void print_regs(char *name, Vector *v) {
+  if (v->len == 0)
+    return;
+  fprintf(stderr, " %s=", name);
+  for (int i = 0; i < v->len; i++) {
+    Reg *r = v->data[i];
+    if (i > 0)
+      fprintf(stderr, ",");
+    fprintf(stderr, "r%d", regno(r));
+  }
+}

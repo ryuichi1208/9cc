@@ -1,21 +1,5 @@
-// Optimization pass. In this pass, we promote all non-address-taken
-// integer variables to register values. As a result, we may have more
-// register values than the number of the physical registers, but
-// that's fine. Regalloc will spill them out to memory.
-
 #include "9cc.h"
 
-// Rewrite
-//
-//  BPREL r1, <offset>
-//  STORE r1, r2
-//  LOAD  r3, r1
-//
-// to
-//
-//  NOP
-//  r4 = r2
-//  r3 = r4
 static void opt(IR *ir) {
   if (ir->op == IR_BPREL) {
     Var *var = ir->var;
